@@ -39,7 +39,7 @@ namespace DogGoMVC.Repositories
                             LEFT JOIN Neighborhood n ON wr.NeighborhoodId = n.Id
                             LEFT JOIN Dog d ON w.DogId = d.Id
                             LEFT JOIN Owner o ON d.OwnerId = o.Id
-                        WHERE w.Id = @id
+                        WHERE w.WalkerId = @id
                     ";
 
                     cmd.Parameters.AddWithValue("@id", id);
@@ -74,7 +74,6 @@ namespace DogGoMVC.Repositories
                                 Id = reader.GetInt32(reader.GetOrdinal("Dog Id")),
                                 Name = reader.GetString(reader.GetOrdinal("Dog Name")),
                                 Breed = reader.GetString(reader.GetOrdinal("Breed")),
-                                //ImageUrl = reader.GetString(reader.GetOrdinal("Dog Img")),
                                 Owner = new Owner()
                                 {
                                     Id = reader.GetInt32(reader.GetOrdinal("Owner Id")),

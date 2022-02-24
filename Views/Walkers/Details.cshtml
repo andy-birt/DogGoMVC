@@ -41,9 +41,9 @@
 
             @foreach (Walk walk in Model.Walks) {
                 <tr>
-                    <td>@walk.Date</td>
+                    <td>@walk.Date.ToShortDateString()</td>
                     <td>@walk.Dog.Owner.Name</td>
-                    <td>@walk.Duration</td>
+                    <td>@TimeSpan.FromSeconds(walk.Duration) min</td>
                 </tr>
             }
           </tbody>
@@ -51,9 +51,7 @@
     </section>
 
     <section class="col-lg-4 col-md-8 container mt-5">
-      <h1>Total Walk Time</h1>
-
-      
+      <h1>Total Walk Time: @TimeSpan.FromSeconds(Model.Walks.Sum(walk => walk.Duration))</h1>
     </section>
   </div>
 </div>
