@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Data.SqlClient;
 using DogGoMVC.Models;
@@ -190,6 +191,38 @@ namespace DogGoMVC.Repositories
                     int id = (int)cmd.ExecuteScalar();
 
                     walk.Id = id;
+                }
+            }
+        }
+
+        public void DeleteWalks(List<int> ids)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+
+                    // Nice Sql command that lets you take a list of ints and place into statement
+                    // The parameter is fine itself but instead of doing just:
+                    //      cmd.Parameters.AddWithValue("@ids", ids);
+                    
+                    // We join the values together in a string like:
+                    //      string.Join(", ", ids);
+                    // And that's the variable for our parameter to add value
+
+                    // Likewise, with the statement itself in the WHERE clause we can't just say in this case:
+                    //      WHERE Id IN (@ids)
+
+                    // Because it is still a string in Sql and it will not execute the command
+                    // But it will if you just want the values and select them from splitting the string
+
+                    cmd.CommandText = @$"
+                        DELETE FROM Walks
+                        WHERE Id IN (SELECT * FROM string_split(@ids, ','))
+                    ";
+                    cmd.Parameters.AddWithValue("@ids", string.Join(", ", ids));
+                    cmd.ExecuteNonQuery();
                 }
             }
         }

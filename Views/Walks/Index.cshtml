@@ -1,4 +1,4 @@
-﻿@model IEnumerable<DogGoMVC.Models.Walk>
+﻿@model DogGoMVC.Models.ViewModels.WalksDeleteFormModel
 
 @{
     ViewData["Title"] = "Index";
@@ -13,47 +13,50 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
+                @Html.DisplayNameFor(model => model.Walk.Id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Date)
+                @Html.DisplayNameFor(model => model.Walk.Date)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Duration)
+                @Html.DisplayNameFor(model => model.Walk.Duration)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.WalkerId)
+                @Html.DisplayNameFor(model => model.Walk.WalkerId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DogId)
+                @Html.DisplayNameFor(model => model.Walk.DogId)
             </th>
-            <th></th>
+            <th>
+                <label for="multi-delete" class="btn btn-danger" >Delete</label>
+            </th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        <form formaction="/Walks/Delete" asp-action="MultiDelete" method="post">
+            <input type="submit" id="multi-delete" formmethod="post" hidden/>
+@for (var i = 0; i < Model.Walks.Count; i++) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Id)
+                @Html.DisplayFor(modelItem => Model.Walks[i].Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Date)
+                @Html.DisplayFor(modelItem => Model.Walks[i].Date)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Duration)
+                @Html.DisplayFor(modelItem => Model.Walks[i].Duration)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.WalkerId)
+                @Html.DisplayFor(modelItem => Model.Walks[i].WalkerId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DogId)
+                @Html.DisplayFor(modelItem => Model.Walks[i].DogId)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                <input asp-for="@Model.Items[i].IsToBeDeleted" class="form-check-input" type="checkbox" value="@Model.Walks[i].Id" />
             </td>
         </tr>
 }
+        </form>
     </tbody>
 </table>
