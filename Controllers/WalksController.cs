@@ -4,6 +4,7 @@ using DogGoMVC.Repositories;
 using DogGoMVC.Models;
 using DogGoMVC.Models.ViewModels;
 using System.Collections.Generic;
+using System;
 
 namespace DogGoMVC.Controllers
 {
@@ -52,11 +53,28 @@ namespace DogGoMVC.Controllers
         {
             try
             {
-                _walkRepo.AddWalk(walk);
+                // Get the values from multiselect in create form before creating new walks
+                // They will be in Key/Value pairs but I just want the value since it's iterable
+                // The iterable variable dogIds will have each value that was selected
+                var dogIds = Request.Form["Walk.DogId"];
+
+                // Iterate over the ids that were selected in the form and create a new record
+                // for each of the values that were selected in the multiselect
+                foreach (var dogId in dogIds)
+                {
+                    // They will be string so convert to int then
+                    // let the repo take care of the work
+                    walk.DogId = Int32.Parse(dogId);
+                    _walkRepo.AddWalk(walk);
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
+                // It's important to replicate the Get functionality into the catch of the Post
+                // I was experiencing errors here as well as the OwnersController and couldn't
+                // figure out why... turns out this did the trick.. maybe not best solution
+                // but it doesn't break now at least.
                 WalkFormViewModel vm = new WalkFormViewModel()
                 {
                     Walk = new Walk(),
